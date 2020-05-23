@@ -1,0 +1,18 @@
+{
+  "name": "@octetstream/graphql-utils",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "octet-stream/graphql-utils",
+  "author": "Nick K.",
+  "license": "MIT",
+  "private": false,
+  "peerDependencies": {
+    "graphql": "^15.0.0"
+  },
+  "devDependencies": {
+    "@octetstream/eslint-config": "^4.0.0",
+    "eslint": "^7.1.0",
+    "eslint-plugin-import": "^2.20.2",
+    "graphql": "^15.0.0"
+  }
+}
