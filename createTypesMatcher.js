@@ -41,7 +41,10 @@ function createTypesMatcher(fns = []) {
     use(fns)
   }
 
-  return {use, resolveType}
+  resolveType.resolveType = resolveType
+  resolveType.use = resolveType
+
+  return resolveType
 }
 
 module.exports = createTypesMatcher
