@@ -12,7 +12,7 @@ function createTypesMatcher(fns = []) {
    * @param  {...Function} args
    */
   function use(...args) {
-    if (!args.length && args.some(fn => typeof fn !== "function")) {
+    if (args.some(fn => typeof fn !== "function")) {
       throw new TypeError("Expected a types matcher to be a function")
     }
 
