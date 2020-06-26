@@ -80,6 +80,18 @@ test("Returns a GraphQLObjectType returned by one of functions", async t => {
   t.is(type, TUser)
 })
 
+test("Returns null if no GraphQLObjectType has been returned", async t => {
+  const map = new Map()
+  const fn = spy(() => map)
+  const matcher = createTypesMatcher([fn])
+
+  const type = await matcher()
+
+  t.true(fn.called)
+  t.is(fn.firstCall.returnValue, map)
+  t.is(type, null)
+})
+
 test(
   "Throws a TypeError when list list of functions "
     + "contains a element with wrong type",
