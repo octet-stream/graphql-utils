@@ -1,7 +1,5 @@
 const {isObjectType} = require("graphql")
 
-const {isArray} = Array
-
 /**
  * @typedef {import("graphql").GraphQLResolveInfo} GraphQLResolveInfo
  * @typedef {import("graphql").GraphQLObjectType} GraphQLObjectType
