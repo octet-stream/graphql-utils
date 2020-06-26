@@ -8,15 +8,17 @@ const {isArray} = Array
  */
 
 /**
- * @param  {Function[]} fns
+ * @param  {...Function} fns
  */
-function createTypesMatcher(fns = []) {
+function createTypesMatcher(...fns) {
   const list = []
 
   /**
    * @param  {...Function} args
    */
   function use(...args) {
+    args = args.flat()
+
     if (args.some(fn => typeof fn !== "function")) {
       throw new TypeError("Expected a types matcher to be a function")
     }
@@ -45,9 +47,7 @@ function createTypesMatcher(fns = []) {
     return null
   }
 
-  if (isArray(list)) {
-    use(...fns)
-  }
+  use(...fns.flat())
 
   resolveType.resolveType = resolveType
   resolveType.use = use
