@@ -2,11 +2,13 @@ const test = require("ava")
 
 const {spy} = require("sinon")
 const {
-  // graphql,
+  graphql,
+  GraphQLNonNull: Required,
   GraphQLObjectType: Output,
-  // GraphQLUnionType: Union,
-  // GraphQLSchema: Schema,
-  GraphQLString: TString
+  GraphQLUnionType: Union,
+  GraphQLSchema: Schema,
+  GraphQLString: TString,
+  GraphQLInt: TInt
 } = require("graphql")
 
 const createTypesMatcher = require("../createTypesMatcher")
@@ -90,6 +92,121 @@ test("Returns null if no GraphQLObjectType has been returned", async t => {
   t.true(fn.called)
   t.is(fn.firstCall.returnValue, map)
   t.is(type, null)
+})
+
+test("Calls functions from the list with given value", async t => {
+  const expected = new Map()
+  const fn = spy()
+  const matcher = createTypesMatcher([fn])
+
+  await matcher(expected)
+
+  const [actual] = fn.firstCall.args
+
+  t.is(actual, expected)
+})
+
+test("Resolves expected type from Union", async t => {
+  const DATA_SOURCE = [
+    {
+      author: "Daniel Keyes",
+      title: "Flowers for Algernon",
+      pages: 311
+    },
+    {
+      director: "Christopher Nolan",
+      title: "Interstellar",
+      runningTime: 169
+    }
+  ]
+
+  const TBook = new Output({
+    name: "Book",
+    fields: {
+      author: {
+        type: new Required(TString)
+      },
+      title: {
+        type: new Required(TString)
+      },
+      pages: {
+        type: new Required(TInt)
+      }
+    }
+  })
+
+  const TMovie = new Output({
+    name: "Movie",
+    fields: {
+      director: {
+        type: new Required(TString)
+      },
+      title: {
+        type: new Required(TString)
+      },
+      runningTyme: {
+        type: new Required(TInt)
+      }
+    }
+  })
+
+  const matcher = createTypesMatcher([
+    ({director, runningTime}) => (director && runningTime) && TMovie,
+
+    ({author, pages}) => (author && pages) && TBook
+  ])
+
+  const TSearchable = new Union({
+    name: "Searchable",
+    types: [TBook, TMovie],
+    resolveType: matcher
+  })
+
+  const schema = new Schema({
+    query: new Output({
+      name: "Query",
+      fields: {
+        search: {
+          type: new Required(TSearchable),
+          args: {
+            name: {
+              type: new Required(TString)
+            }
+          },
+
+          resolve: (_, {name}) => (
+            DATA_SOURCE.find(({author, director, username}) => (
+              [author, director, username].includes(name)
+            ))
+          )
+        }
+      }
+    })
+  })
+
+  const query = `
+    query {
+      search(name: "Daniel Keyes") {
+        ... on Book {
+          author
+          title
+          pages
+        }
+      }
+    }
+  `
+
+  const response = await graphql(schema, query)
+
+  t.deepEqual(response, {
+    data: {
+      search: {
+        author: "Daniel Keyes",
+        title: "Flowers for Algernon",
+        pages: 311
+      }
+    }
+  })
 })
 
 test(
