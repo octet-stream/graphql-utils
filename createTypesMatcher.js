@@ -6,13 +6,13 @@ const {isObjectType} = require("graphql")
  */
 
 /**
- * @param  {...Function} fns
+ * @param  {...(value: any, info?: GraphQLResolveInfo) => GraphQLObjectType} fns
  */
 function createTypesMatcher(...fns) {
   const list = []
 
   /**
-   * @param  {...Function} args
+   * @param  {...(value: any, info?: GraphQLResolveInfo) => GraphQLObjectType} args
    */
   function use(...args) {
     args = args.flat()
@@ -29,7 +29,7 @@ function createTypesMatcher(...fns) {
    * Used as the as the resolveType function at Union and Interface.
    *
    * @param {any} value
-   * @param {GraphQLResolveInfo}
+   * @param {GraphQLResolveInfo} [info]
    *
    * @return {Promise<GraphQLObjectType | null>}
    */
