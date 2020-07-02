@@ -6,11 +6,15 @@
   "author": "Nick K.",
   "license": "MIT",
   "private": false,
-  "peerDependencies": {
-    "graphql": "^15.0.0"
-  },
   "engines": {
     "node": ">= 10.15"
+  },
+  "scripts": {
+    "coverage": "c8 ava",
+    "report:json": "c8 -r=json ava"
+  },
+  "peerDependencies": {
+    "graphql": "^15.0.0"
   },
   "devDependencies": {
     "@octetstream/eslint-config": "4.0.0",
