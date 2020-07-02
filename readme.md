@@ -2,4 +2,4 @@
 
 A set of small graphql utilities.
 
-🚧Work im progress
+🚧Work in progress
