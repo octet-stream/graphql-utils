@@ -9,16 +9,56 @@ const {
   isListType,
 } = require("graphql")
 
+/**
+ * @typedef {import("graphql").GraphQLObjectType} GraphQLObjectType
+ */
+
+/**
+ * @typedef {Object} Page
+ *
+ * @property {any[]} rows
+ * @property {number} page
+ * @property {number} limit
+ * @property {number} count
+ */
+
 const {isArray} = Array
 
+/**
+ * @param {Page} params
+ */
 const rowsToList = ({rows}) => rows
 
-const getCurrent = ({page}) => page
+/**
+ * @param {Page} params
+ */
+const getCurrent = ({page = 1}) => page
 
-const getHasNext = ({limit, page, count}) => count - limit * page > 0
+/**
+ * @param {Page} params
+ */
+function getHasNext({limit, page, count}) {
+  if (limit != null && page != null && count != null) {
+    return count - limit * page > 0
+  }
 
-const getLastPage = ({limit, page, count}) => Math.ceil(count / (limit * page))
+  return false
+}
 
+/**
+ * @param {Page} params
+ */
+function getLastPage({limit, page, count}) {
+  if (limit != null && page != null && count != null) {
+    Math.ceil(count / (limit * page))
+  }
+
+  return 1
+}
+
+/**
+ * @param {GraphQLObjectType | [GraphQLObjectType, boolean]} t
+ */
 function getTypeInfo(t) {
   if (isArray(t)) {
     return t
@@ -27,8 +67,14 @@ function getTypeInfo(t) {
   return [getNamedType(t), isNonNullType(t)]
 }
 
-function createPageType({type, required = false, ...field}) {
-  let [t, nonNullableFlag] = getTypeInfo(type)
+/**
+ * @param {Object} config
+ * @param {GraphQLObjectType | [GraphQLObjectType, boolean]} config.type
+ * @param {boolean} [config.required = false]
+ */
+function createPageType({type: target, required = false, ...field}) {
+  // eslint-disable-next-line prefer-const
+  let [t, nonNullableFlag] = getTypeInfo(target)
 
   const typeName = t.name.endsWith("Page") ? t.name : `${t.name}Page`
 
@@ -45,7 +91,7 @@ function createPageType({type, required = false, ...field}) {
         description: "Returns the total number of rows",
       },
       limit: {
-        type: new Required(TInt),
+        type: TInt,
         description: "Returns the actual limit of per-page entities",
       },
       offset: {
@@ -79,5 +125,4 @@ function createPageType({type, required = false, ...field}) {
   })
 }
 
-module.exports = createPageType
-module.exports.default = createPageType
+export default createPageType
