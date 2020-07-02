@@ -28,8 +28,8 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node }}
-      - run: npm install
-      - run: npm run report:json
+      - run: yarn --frozen-lockfile
+      - run: yarn report:json
       - name: Codecov
         uses: codecov/codecov-action@v1
         if: matrix.node == '14.x' && matrix.os == 'ubuntu-latest'
