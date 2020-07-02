@@ -1,5 +1,5 @@
 # graphql-utils
 
-A set of small graphql utilities.
+A set of utilities for GraphQL.js
 
 🚧 Work in progress
