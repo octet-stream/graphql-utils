@@ -1,5 +1,7 @@
 const {isObjectType} = require("graphql")
 
+const flat = require("./util/flat")
+
 /**
  * @typedef {import("graphql").GraphQLResolveInfo} GraphQLResolveInfo
  * @typedef {import("graphql").GraphQLObjectType} GraphQLObjectType
@@ -15,7 +17,7 @@ function createTypesMatcher(...fns) {
    * @param  {...(value: any, info?: GraphQLResolveInfo) => GraphQLObjectType} args
    */
   function use(...args) {
-    args = args.flat()
+    args = flat(args)
 
     if (args.some(fn => typeof fn !== "function")) {
       throw new TypeError("Expected a types matcher to be a function")
@@ -45,7 +47,7 @@ function createTypesMatcher(...fns) {
     return null
   }
 
-  use(...fns.flat())
+  use(...flat(fns))
 
   resolveType.resolveType = resolveType
   resolveType.use = use
