@@ -215,6 +215,6 @@ test(
   t => {
     const trap = () => createTypesMatcher([42])
 
-    t.throws(trap, {message: "Expected a types matcher to be a function"})
+    t.throws(trap, {message: "Expected types matcher to be a function"})
   }
 )

@@ -8,19 +8,28 @@ const flat = require("./util/flat")
  */
 
 /**
- * @param  {...(value: any, info?: GraphQLResolveInfo) => GraphQLObjectType} fns
+ * @callback Matcher
+ *
+ * @param {any} value
+ * @param {GraphQLResolveInfo} [info]
+ *
+ * @return {Promise<GraphQLObjectType | void> | GraphQLObjectType | void}
+ */
+
+/**
+ * @param  {...Matcher} fns
  */
 function createTypesMatcher(...fns) {
   const list = []
 
   /**
-   * @param  {...(value: any, info?: GraphQLResolveInfo) => GraphQLObjectType} args
+   * @param  {...Matcher} args
    */
   function use(...args) {
     args = flat(args)
 
     if (args.some(fn => typeof fn !== "function")) {
-      throw new TypeError("Expected a types matcher to be a function")
+      throw new TypeError("Expected types matcher to be a function")
     }
 
     list.push(...args)

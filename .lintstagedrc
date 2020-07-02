@@ -1,0 +1,4 @@
+{
+  "util/**/*.js": "eslint --fix",
+  "*.js": "eslint --fix"
+}
